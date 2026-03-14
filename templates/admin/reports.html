@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Gym Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <nav class="bg-dark text-white" style="width: 250px; min-height: 100vh;">
+            <div class="p-3">
+                <h4 class="text-center mb-4"><i class="fas fa-dumbbell"></i> Gym Admin</h4>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2">
+                        <a href="/admin/dashboard" class="nav-link text-white"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="/admin/users" class="nav-link text-white"><i class="fas fa-users"></i> Users</a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="/admin/plans" class="nav-link text-white"><i class="fas fa-list"></i> Plans</a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="/admin/memberships" class="nav-link text-white"><i class="fas fa-id-card"></i> Memberships</a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="/admin/reports" class="nav-link text-white active"><i class="fas fa-chart-line"></i> Reports</a>
+                    </li>
+                    <li class="nav-item mt-4">
+                        <a href="/admin/logout" class="nav-link text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="flex-grow-1">
+            <!-- Top Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <span class="navbar-brand mb-0 h1">Reports & Analytics</span>
+                    <div class="d-flex">
+                        <a href="/admin/logout" class="btn btn-outline-danger btn-sm">Logout</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid mt-4">
+                <!-- Report Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                                <h4>{{ total_users }}</h4>
+                                <p class="text-muted mb-0">Total Users</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-id-card fa-2x text-success mb-2"></i>
+                                <h4>{{ total_memberships }}</h4>
+                                <p class="text-muted mb-0">Total Memberships</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-list fa-2x text-warning mb-2"></i>
+                                <h4>{{ total_plans }}</h4>
+                                <p class="text-muted mb-0">Total Plans</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-rupee-sign fa-2x text-info mb-2"></i>
+                                <h4>₹ {{ total_revenue }}</h4>
+                                <p class="text-muted mb-0">Total Revenue</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-chart-pie"></i> Membership Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="membershipChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-chart-bar"></i> Revenue Overview</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Report -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-table"></i> Detailed Report</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Total Registered Users</td>
+                                    <td>{{ total_users }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Active Memberships</td>
+                                    <td>{{ total_memberships }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Available Plans</td>
+                                    <td>{{ total_plans }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Revenue Generated</td>
+                                    <td>₹ {{ total_revenue }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Membership Distribution Chart
+        const membershipCtx = document.getElementById('membershipChart').getContext('2d');
+        const membershipChart = new Chart(membershipCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Basic', 'Premium', 'VIP'],
+                datasets: [{
+                    label: 'Memberships',
+                    data: [30, 20, 10], // Placeholder data
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 205, 86, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 205, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        // Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Revenue (₹)',
+                    data: [12000, 19000, 3000, 5000, 2000, 3000], // Placeholder data
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

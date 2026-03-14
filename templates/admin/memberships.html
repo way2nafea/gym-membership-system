@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memberships Management - Gym Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <style>
+        .membership-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+        .membership-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        .status-active {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <nav class="bg-dark text-white" style="width: 250px; min-height: 100vh;">
+            <div class="p-3">
+                <h4 class="text-center mb-4"><i class="fas fa-dumbbell"></i> Gym Admin</h4>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2">
+                        <a href="/admin/dashboard" class="nav-link text-white"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="/admin/users" class="nav-link text-white"><i class="fas fa-users"></i> Users</a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="/admin/plans" class="nav-link text-white"><i class="fas fa-list"></i> Plans</a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="/admin/memberships" class="nav-link text-white active"><i class="fas fa-id-card"></i> Memberships</a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="/admin/reports" class="nav-link text-white"><i class="fas fa-chart-line"></i> Reports</a>
+                    </li>
+                    <li class="nav-item mt-4">
+                        <a href="/admin/logout" class="nav-link text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="flex-grow-1">
+            <!-- Top Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <span class="navbar-brand mb-0 h1">Memberships Management</span>
+                    <div class="d-flex">
+                        <a href="/admin/logout" class="btn btn-outline-danger btn-sm">Logout</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid mt-4">
+                <!-- Memberships Stats -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-id-card fa-2x text-primary mb-2"></i>
+                                <h4>{{ memberships|length }}</h4>
+                                <p class="text-muted mb-0">Total Memberships</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-rupee-sign fa-2x text-success mb-2"></i>
+                                <h4>₹ {{ memberships|sum(attribute='3') if memberships else 0 }}</h4>
+                                <p class="text-muted mb-0">Total Revenue</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-calendar-alt fa-2x text-info mb-2"></i>
+                                <h4>0</h4>
+                                <p class="text-muted mb-0">This Month</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Memberships Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-table"></i> All Memberships</h5>
+                    </div>
+                    <div class="card-body">
+                        <table id="membershipsTable" class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>User Name</th>
+                                    <th>Plan Name</th>
+                                    <th>Price</th>
+                                    <th>Purchase Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for membership in memberships %}
+                                <tr>
+                                    <td>{{ membership[0] }}</td>
+                                    <td>{{ membership[1] }}</td>
+                                    <td>{{ membership[2] }}</td>
+                                    <td>₹ {{ membership[3] }}</td>
+                                    <td>{{ membership[4] }}</td>
+                                    <td><span class="status-active">Active</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#membershipsTable').DataTable({
+                "pageLength": 10,
+                "ordering": true,
+                "searching": true,
+                "responsive": true
+            });
+        });
+    </script>
+</body>
+</html>
