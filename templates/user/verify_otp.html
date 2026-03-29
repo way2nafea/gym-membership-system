@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP - Gym Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header text-center bg-info text-white">
+                    <h4>Verify OTP</h4>
+                    <p class="small">Enter the 6-digit code sent to your email</p>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endwith %}
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endif %}
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">OTP</label>
+                            <input type="text" name="otp" class="form-control" placeholder="123456" required pattern="\d{6}" maxlength="6">
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Verify OTP</button>
+                    </form>
+                    <div class="d-flex justify-content-between mt-3">
+                        <form action="{{ url_for('resend_otp') }}" method="POST" class="m-0">
+                            <button type="submit" class="btn btn-link p-0">Resend OTP</button>
+                        </form>
+                        <a href="/forgot_password" class="text-decoration-none">Change email</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

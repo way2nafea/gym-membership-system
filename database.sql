@@ -37,10 +37,12 @@ INSERT INTO plans(plan_name,price,duration) VALUES
 
 -- Membership purchases
 CREATE TABLE memberships(
-id INT AUTO_INCREMENT PRIMARY KEY,
-user_id INT,
-plan_id INT,
-purchase_date DATE,
-FOREIGN KEY(user_id) REFERENCES users(id),
-FOREIGN KEY(plan_id) REFERENCES plans(id)
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  plan_id INT,
+  purchase_date DATE,
+  expiry_date DATE,
+  status ENUM('Active','Expired') NOT NULL DEFAULT 'Active',
+  FOREIGN KEY(user_id) REFERENCES users(id),
+  FOREIGN KEY(plan_id) REFERENCES plans(id)
 );

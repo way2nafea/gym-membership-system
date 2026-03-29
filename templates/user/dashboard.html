@@ -99,6 +99,20 @@
 
 
 <body>
+<div class="toast-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="toast align-items-center text-bg-{{ category if category in ['success','danger','warning','info'] else 'primary' }} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">{{ message }}</div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
 
 <!-- NAVBAR -->
 
@@ -144,18 +158,30 @@
                     <div class="col-md-8">
 
                         <h2 class="mb-2">
-                            Welcome to Your Dashboard!
+                            Welcome back, {{ user_name }}!
                         </h2>
 
-                        <p class="mb-0 text-muted">
-                            Explore our membership plans and choose one that fits your fitness goals.
+                        <p class="mb-1 text-muted">
+                            You are logged in as <strong>Member</strong>.
                         </p>
+
+                        {% if active_membership and active_membership.is_active %}
+                        <div class="alert alert-success" role="alert">
+                            <strong>Active Membership:</strong> {{ active_membership.plan_name }}<br>
+                            <strong>Expiry:</strong> {{ active_membership.expiry_date.strftime('%Y-%m-%d') }}<br>
+                            <span class="fw-semibold">Already Active</span>
+                        </div>
+                        {% else %}
+                        <p class="mb-0 text-muted">
+                            Explore packages and start your fitness journey with confidence.
+                        </p>
+                        {% endif %}
 
                     </div>
 
                     <div class="col-md-4 text-center">
 
-                        <i class="fas fa-user-circle fa-5x text-primary"></i>
+                        <img src="https://ui-avatars.com/api/?name={{ user_name | urlencode }}&background=667eea&color=ffffff&size=120" class="rounded-circle" alt="Avatar">
 
                     </div>
 
@@ -220,13 +246,17 @@
                         </ul>
 
 
-                        <a href="/buy/{{ plan[0] }}"
-                           class="btn btn-buy text-white w-100">
-
-                            <i class="fas fa-shopping-cart me-2"></i>
-                            Buy Now
-
-                        </a>
+                        {% if active_membership and active_membership.is_active %}
+                            <button type="button" class="btn btn-secondary w-100" disabled>
+                                <i class="fas fa-check-circle me-2"></i>
+                                Already Active
+                            </button>
+                        {% else %}
+                            <a href="/buy/{{ plan[0] }}" class="btn btn-buy text-white w-100">
+                                <i class="fas fa-shopping-cart me-2"></i>
+                                Buy Now
+                            </a>
+                        {% endif %}
 
                     </div>
 
